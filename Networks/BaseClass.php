@@ -1,42 +1,22 @@
 <?php
+require_once __DIR__ . '/Utils/RequestClass.php';
 
 abstract class BaseClass
 {
     protected $appKey;
     protected $requestContent;
 
-    // Query params
-    protected $sz;
-    protected $os;
-    protected $ip;
-    protected $source;
-    protected $ab;
-    protected $aid;
-    protected $mraid;
-    protected $ua;
-    protected $cb;
-    protected $timeout;
-    protected $an;
-    protected $url;
-
     public function __construct($appKey, $requestContent)
     {
         $this->appKey = $appKey;
         $this->requestContent = $requestContent;
+    }
 
-        // Set query params for the request
-        $this->sz       = $requestContent->imp[0]->banner->w . "x" . $requestContent->imp[0]->banner->h;
-        $this->os       = $requestContent->device->os;
-        $this->ip       = $requestContent->device->ip;
-        $this->source   = "app";
-        $this->ab       = $requestContent->app->bundle;
-        $this->aid      = $requestContent->device->ifa;
-        $this->mraid    = "1";
-        $this->ua       = $requestContent->device->ua;
-        $this->cb       = uniqid();
-        $this->timeout  = "400";
-        $this->an       = $requestContent->app->name;
-        $this->url      = $requestContent->app->storeurl;
+    protected function RequestGet($p_url)
+    {
+        $request = new RequestClass();
+        $response = $request->Get($p_url);
+        return $response;
     }
 
     protected function StoreResponse($p_http_code, $p_header, $p_body)

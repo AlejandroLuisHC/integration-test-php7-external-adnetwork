@@ -17,41 +17,26 @@ class TappxClass extends BaseClass
         $url = "http://test-ssp.tappx.net/ssp/req.php";
 
         // Append the required parameters to the URL string
-        $url .= "?key="     . urlencode($this->appKey);
-        $url .= "&sz="      . urlencode($this->sz);
-        $url .= "&os="      . urlencode($this->os);
-        $url .= "&ip="      . urlencode($this->ip);
-        $url .= "&source="  . urlencode($this->source);
-        $url .= "&ab="      . urlencode($this->ab);
-        $url .= "&aid="     . urlencode($this->aid);
-        $url .= "&mraid="   . urlencode($this->mraid);
-        $url .= "&ua="      . urlencode($this->ua);
-        $url .= "&cb="      . urlencode($this->cb);
-        $url .= "&timeout=" . urlencode($this->timeout);
-        $url .= "&an="      . urlencode($this->an);
-        $url .= "&url="     . urlencode($this->url);
+        $url .= "?key="     . urlencode($this->requestContent->appKey);
+        $url .= "&sz="      . urlencode($this->requestContent->sz);
+        $url .= "&os="      . urlencode($this->requestContent->os);
+        $url .= "&ip="      . urlencode($this->requestContent->ip);
+        $url .= "&source="  . urlencode($this->requestContent->source);
+        $url .= "&ab="      . urlencode($this->requestContent->ab);
+        $url .= "&aid="     . urlencode($this->requestContent->aid);
+        $url .= "&mraid="   . urlencode($this->requestContent->mraid);
+        $url .= "&ua="      . urlencode($this->requestContent->ua);
+        $url .= "&cb="      . urlencode($this->requestContent->cb);
+        $url .= "&timeout=" . urlencode($this->requestContent->timeout);
+        $url .= "&an="      . urlencode($this->requestContent->an);
+        $url .= "&url="     . urlencode($this->requestContent->url);
 
-        // Create a GET request with the request content
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HEADER, true);
+        // Send the request to the API
+        $data = $this->RequestGet($url);
 
-        // Send the request and get the response
-        $response = curl_exec($curl);
+        echo "Tappx API returned HTTP code " . $data->http_code;
+        $storedMsg = $this->StoreResponse($data->http_code, $data->header, $data->body);
 
-        if ($response === false) {
-            throw new Exception("Failed request: " . curl_error($curl));
-        }
-
-        $http_code   = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-        $header      = substr($response, 0, $header_size);
-        $body        = substr($response, $header_size);
-
-        echo "Tappx API returned HTTP code " . $http_code;
-        $res = $this->StoreResponse($http_code, $header, $body);
-
-        return $res;
+        return $body ?? $storedMsg;
     }
 }
