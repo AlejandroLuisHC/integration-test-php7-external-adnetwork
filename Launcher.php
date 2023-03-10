@@ -34,50 +34,52 @@ class Launcher
     {
         $this->m_app_key         = $p_app_key;
         $this->m_request_content = $this->ParseContent($p_request_content_object);
-        $this->m_timeout = $this->m_request_content->timeout;
+        $this->m_timeout         = $this->m_request_content['timeout'];
     }
     private function ParseContent($p_content)
     {
         $decodedJson = json_decode($p_content);
         // Set query params for the request
-        $sz       = $requestContent->imp[0]->banner->w . "x" . $requestContent->imp[0]->banner->h;
-        $os       = $requestContent->device->os;
-        $ip       = $requestContent->device->ip;
-        $source   = $requestContet->app ? "app" : "web";
-        $ab       = $requestContent->app->bundle;
-        $aid      = $requestContent->device->ifa;
-        if (in_array(3, $requestContent->imp->banner->api)) {
+        $sz       = $decodedJson->imp[0]->banner->w . "x" . $decodedJson->imp[0]->banner->h;
+        $os       = $decodedJson->device->os;
+        $ip       = $decodedJson->device->ip;
+        $source   = $decodedJson->app ? "app" : "web";
+        $ab       = $decodedJson->app->bundle;
+        $aid      = $decodedJson->device->ifa;
+        if (in_array(3, $decodedJson->imp[0]->banner->api)) {
             $mraid = 1;
-        } else if (in_array(5, $requestContent->imp->banner->api)) {
+        } else if (in_array(5, $decodedJson->imp[0]->banner->api)) {
             $mraid = 2;
         } else {
             $mraid = 0; 
         };
-        $ua       = $requestContent->device->ua;
+        $ua       = $decodedJson->device->ua;
         $cb       = uniqid();
-        $timeout  = $requestContent->tmax;
-        $an       = $requestContent->app->name;
-        $url      = $requestContent->app->storeurl;
+        $timeout  = $decodedJson->tmax;
+
+        // Extra recommended params
+        $an       = $decodedJson->app->name;
+        $url      = $decodedJson->app->storeurl;
+
         return array(
-            "sz" => $sz,
-            "os" => $os,
-            "ip" => $ip,
-            "source" => $source,
-            "ab" => $ab,
-            "aid" => $aid,
-            "mraid" => $mraid,
-            "ua" => $ua,
-            "cb" => $cb,
-            "timeout" => $timeout,
-            "an" => $an,
-            "url" => $url
+            "sz"        => $sz,
+            "os"        => $os,
+            "ip"        => $ip,
+            "source"    => $source,
+            "ab"        => $ab,
+            "aid"       => $aid,
+            "mraid"     => $mraid,
+            "ua"        => $ua,
+            "cb"        => $cb,
+            "timeout"   => $timeout,
+            "an"        => $an,
+            "url"       => $url
         );
     }
 
     public function Run()
     {
         $res = [];
-
 
         $start = microtime(true);
 

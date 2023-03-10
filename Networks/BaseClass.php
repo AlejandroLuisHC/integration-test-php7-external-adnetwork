@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/Utils/RequestClass.php';
+
+require_once __DIR__ . '/../utils/RequestClass.php';
 
 abstract class BaseClass
 {
@@ -14,8 +15,8 @@ abstract class BaseClass
 
     protected function RequestGet($p_url)
     {
-        $request = new RequestClass();
-        $response = $request->Get($p_url);
+        $request = new RequestClass($p_url);
+        $response = $request->Get();
         return $response;
     }
 

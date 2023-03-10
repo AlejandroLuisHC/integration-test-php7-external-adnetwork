@@ -8,7 +8,7 @@ class RequestClass
     {
         $this->url = $p_url;
     }
-    
+
     public function Get()
     {
         // Create a GET request with the request content
@@ -29,6 +29,10 @@ class RequestClass
         $header      = substr($response, 0, $header_size);
         $body        = substr($response, $header_size);
 
-        return array($http_code, $header, $body);
+        return array(
+            'http_code' => $http_code, 
+            'header'    => $header,
+            'body'      => $body
+        );
     }
 }
